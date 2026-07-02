@@ -13,30 +13,37 @@ Open http://127.0.0.1:8000/
 
 ## Deployment
 
-Hosted on **[Netlify](https://www.netlify.com)**. No build step.
+Hosted on **[GitHub Pages](https://pages.github.com)** from [Britecyte/lipoderma-website](https://github.com/Britecyte/lipoderma-website). Static HTML/CSS/JS from the repo root — no build step.
 
 | Environment | Trigger | URL |
 |-------------|---------|-----|
-| **Production** | push to `main` | `lipoderma.com` |
-| **Branch preview** | push to any other branch (e.g. `preview`) | `branch-name--lipoderma-website.netlify.app` |
-| **Deploy preview** | pull request to `main` | link on the PR / Netlify dashboard |
+| **Production** | push to `main` | `lipoderma.com` (after DNS) |
+| **GitHub Pages default** | push to `main` | https://britecyte.github.io/lipoderma-website/ |
 
-### One-time Netlify setup
+Deploys via `.github/workflows/deploy-pages.yml` on every push to `main`.
 
-1. In the **Britecyte Netlify team**, **Add new site → Import from GitHub** → `lipoderma-website`.
-2. Build settings (from `netlify.toml`):
-   - Build command: *(empty)*
-   - Publish directory: `.`
-3. **Domain management** → add `lipoderma.com` and `www.lipoderma.com`.
-4. Enable **Branch deploys** for `preview` if you want a standing staging URL.
-5. Make the GitHub repo **private** if desired.
+### One-time GitHub Pages setup
+
+1. Repo **Settings → Pages → Build and deployment**
+   - Source: **GitHub Actions**
+2. After the first workflow run succeeds, the site is live at the `*.github.io` URL above.
+3. **Settings → Pages → Custom domain** → add `lipoderma.com` and enable **Enforce HTTPS** once DNS propagates.
 
 ### Custom domain (GoDaddy)
 
-Use the DNS records Netlify shows after adding the domain (replace any old GitHub Pages records).
+Remove any old Netlify DNS records first, then add:
 
-### Access notes
+| Type | Name | Value |
+|------|------|-------|
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `britecyte.github.io` |
 
-- **GitHub repo:** Can be private — only org members see source on GitHub.
-- **Live website:** Public. View Source / DevTools always work on any static host.
-- **Data files** (e.g. `/data/providers.json`) are reachable by URL if someone knows the path.
+GitHub may also show repo-specific CNAME targets in **Settings → Pages** — use those if they differ.
+
+### Retiring Netlify
+
+1. In Netlify: **Site configuration → Delete site** (or disconnect the GitHub repo).
+2. Delete the Netlify team/account when ready — hosting no longer depends on it.
